@@ -1,3 +1,6 @@
+# Build directory
+app/public
+
 # Mac OS X
 .DS_Store
 
