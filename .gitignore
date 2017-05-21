@@ -1,5 +1,5 @@
 # Build directory
-app/public
+public
 
 # Mac OS X
 .DS_Store
