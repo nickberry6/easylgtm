@@ -1,71 +1,19 @@
-var express = require('express');
-var router = express.Router();
-var Post = require('../models/post');
+var router = require('express').Router();
+var posts = require('./posts');
+var users = require('./users');
+var setup = require('./setup');
+var auth = require('./auth');
+var verifyToken = require('./middleware/token');
 
-router.use(function(req, res, next) {
-    // request middleware
+router.use(function(req, res, next) { //middleware for all routes
     console.log(req.method, req.url);
     next();
 });
 
-router.route('/posts')
-  .get(function(req, res) {
-    Post.find(function(err, posts) {
-        if (err)
-            res.send(err);
+router.use('/posts', posts);
+router.use('/authenticate', auth);
+router.use('/', verifyToken);
+router.use('/users', users);
+router.use('/setup', setup);
 
-        res.json(posts);
-    });
-  })
-  .post(function(req, res) {
-    var post = new Post();
-    post.description = req.body.description;
-    post.title = req.body.title;
-    post.url = req.body.url;
-    post.save(function(err) {
-        if (err) {
-          res.send(err);
-        };
-
-        res.json({ message: 'Post created!' });
-    });
-  });
-
-router.route('/posts/:post_id')
-  .get(function(req, res) {
-      Post.findById(req.params.post_id, function(err, post) {
-          if (err)
-              res.send(err);
-          res.json(post);
-      });
-  })
-  .put(function(req, res) {
-      Post.findById(req.params.post_id, function(err, post) {
-
-          if (err)
-              res.send(err);
-
-          post.description = req.body.description;
-          post.title = req.body.title;
-          post.url = req.body.url;
-
-          post.save(function(err) {
-              if (err)
-                  res.send(err);
-
-              res.json({ message: 'Post updated!' });
-          });
-      });
-    })
-    .delete(function(req, res) {
-        Post.remove({
-            _id: req.params.post_id
-        }, function(err, post) {
-            if (err)
-                res.send(err);
-
-            res.json({ message: 'Successfully deleted' });
-        });
-    });
-
-  module.exports = router;
+module.exports = router;

@@ -10,3 +10,10 @@
 
 1. start mongo
 2. npm start
+
+
+## TODOs:
+- [x] user model
+- [x] user routing
+- [x] auth tokens
+- [ ] integrate frontend application
