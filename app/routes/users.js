@@ -4,9 +4,9 @@ var User = require('../models/user');
 users.route('/')
   .get(function(req, res) {
     User.find(function(err, users) {
-        if (err)
-            res.send(err);
-
+        if (err) {
+          res.send(err);
+        };
         res.json(users);
     });
   })
@@ -17,48 +17,47 @@ users.route('/')
     user.password = req.body.password;
     user.admin = req.body.admin;
     user.save(function(err) {
-        if (err) {
-          res.send(err);
-        };
-
-        res.json({ message: 'User created!' });
+      if (err) {
+        res.send(err);
+      };
+      res.json({ message: 'User created!' });
     });
   });
 
 users.route('/:user_id')
   .get(function(req, res) {
       User.findById(req.params.user_id, function(err, user) {
-          if (err)
-              res.send(err);
-          res.json(user);
+        if (err) {
+          res.send(err);
+        };
+        res.json(user);
       });
   })
   .put(function(req, res) {
       User.findById(req.params.user_id, function(err, user) {
+        if (err) {
+          res.send(err);
+        };
+        user.name = req.body.name;
+        user.email = req.body.email;
+        user.password = req.body.password;
+        user.admin = req.body.admin;
 
-          if (err)
+        user.save(function(err) {
+            if (err) {
               res.send(err);
-
-          user.name = req.body.name;
-          user.email = req.body.email;
-          user.password = req.body.password;
-          user.admin = req.body.admin;
-
-          user.save(function(err) {
-              if (err)
-                  res.send(err);
-
-              res.json({ message: 'User updated!' });
-          });
+            };
+            res.json({ message: 'User updated!' });
+        });
       });
     })
     .delete(function(req, res) {
         User.remove({
             _id: req.params.user_id
         }, function(err, user) {
-            if (err)
-                res.send(err);
-
+            if (err) {
+              res.send(err);
+            };
             res.json({ message: 'Successfully deleted' });
         });
     });

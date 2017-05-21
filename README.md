@@ -13,7 +13,7 @@
 
 
 ## TODOs:
-- [ ] user model
-- [ ] user routing
-- [ ] auth tokens
+- [x] user model
+- [x] user routing
+- [x] auth tokens
 - [ ] integrate frontend application

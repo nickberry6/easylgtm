@@ -15,15 +15,14 @@ auth.route('/')
         if (user.password != req.body.password) {
           res.json({ success: false, message: 'Invalid password.' });
         } else {
-            var token = jwt.sign(user, config.secret, {
-              expiresIn: 60*60*24 // expires in 24 hours
-            });
-
-            res.json({
-              success: true,
-              message: 'Here have this token',
-              token: token
-            });
+          var token = jwt.sign(user, config.secret, {
+            expiresIn: 60*60*24 // 24 hours
+          });
+          res.json({
+            success: true,
+            message: 'Here have this token',
+            token: token
+          });
         };
       };
     });
