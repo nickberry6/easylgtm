@@ -5,7 +5,6 @@ var config = require('../config');
 
 auth.route('/')
   .post(function(req, res) {
-
     User.findOne({ name: req.body.name}, function(err, user) {
       if (err) throw err;
 
