@@ -7,6 +7,8 @@ var PostSchema = new Schema({
   image: String,
   upvotes: Number,
   downvotes: Number
+}, {
+    versionKey: false
 });
 
 module.exports = mongoose.model('Post', PostSchema);
