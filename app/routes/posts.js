@@ -4,9 +4,9 @@ var Post = require('../models/post');
 posts.route('/')
   .get(function(req, res) {
     Post.find(function(err, posts) {
-        if (err)
-            res.send(err);
-
+        if (err) {
+          res.send(err);
+        };
         res.json(posts);
     });
   })
@@ -15,6 +15,7 @@ posts.route('/')
     post.description = req.body.description;
     post.title = req.body.title;
     post.url = req.body.url;
+
     post.save(function(err) {
       if (err) {
         res.send(err);
@@ -40,6 +41,7 @@ posts.route('/:post_id')
         post.description = req.body.description;
         post.title = req.body.title;
         post.url = req.body.url;
+        
         post.save(function(err) {
           if (err) {
             res.send(err);
