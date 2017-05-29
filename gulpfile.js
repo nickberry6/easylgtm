@@ -3,6 +3,7 @@ var concat = require('gulp-concat');
 var browserify = require('gulp-browserify');
 var clean = require('gulp-clean');
 var browserSync = require('browser-sync').create();
+var historyApiFallback = require('connect-history-api-fallback')
 
 gulp.task('build', ['scripts', 'html', 'img']);
 gulp.task('serve', ['browser-sync']);
@@ -13,10 +14,14 @@ gulp.task('browser-sync', function() {
         port: 6543,
         server: {
             baseDir: "./public",
-            middleware: function (req, res, next) {
+
+            middleware: [
+              function (req, res, next) {
               res.setHeader('Access-Control-Allow-Origin', '*');
               next();
-            }
+            },
+            historyApiFallback()
+          ]
         }
     });
     gulp.watch("src/**/**/*.js", ['js-watch']);
