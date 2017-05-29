@@ -12,5 +12,11 @@
             controller: 'lgtmListController as vm'
           })
 
+
+          .state('login', {
+            url: '/login',
+            templateUrl: 'lgtm/templates/login.html'
+          })
+
         });
 })();
