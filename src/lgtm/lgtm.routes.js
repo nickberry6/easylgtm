@@ -6,7 +6,7 @@
         .config(function($stateProvider){
 
           $stateProvider
-          .state('lgtm-list', {
+          .state('home', {
             url: '/',
             templateUrl: 'lgtm/templates/lgtm.list.html',
             controller: 'lgtmListController as vm'
@@ -15,7 +15,8 @@
 
           .state('login', {
             url: '/login',
-            templateUrl: 'lgtm/templates/login.html'
+            templateUrl: 'lgtm/templates/login.html',
+            controller: 'loginController as vm'
           })
 
         });
