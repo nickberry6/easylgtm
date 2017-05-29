@@ -6,6 +6,7 @@
             'ui.router',
             'ngResource',
             'ngTagsInput',
-            'ui.bootstrap'
+            'ui.bootstrap',
+            'ngCookies'
         ])
 })();

@@ -6,7 +6,7 @@
         .controller('loginController', loginController);
 
     /* @ngInject */
-    function loginController(programService, $stateParams, $state, $resource, $http, api, api3) {
+    function loginController(programService, $stateParams, $state, $resource, $http, api, api3, $cookies) {
         var vm = this;
 
         vm.login = login;
@@ -31,11 +31,18 @@
         function login() {
 
           api3.login({name: vm.username, password: vm.password}, function(response) {
-          
 
+            $cookies.put('easy', response.token);
             console.log(response);
-
+            $state.go('home');
           });
+
+
+
+
+
+
+
         }
 
 
