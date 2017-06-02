@@ -46,7 +46,7 @@
                     });
 
     /* @ngInject */
-    function lgtmListController(programService, $stateParams, $state, $resource, $http, api, api3) {
+    function lgtmListController(loginService,programService, $stateParams, $state, $resource, $http, api, api3) {
         var vm = this;
 
         activate();
@@ -55,11 +55,9 @@
 
         function activate() {
 
-          var login = api3.login({name: 'Nick Berry', password: 'password'}, function(response) {
+          vm.userProfile = loginService.getProfile();
 
-            console.log(response);
-
-          });
+          console.log(vm.userProfile)
 
           api.posts({}, function(response) {
 
