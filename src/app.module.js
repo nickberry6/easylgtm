@@ -4,7 +4,8 @@
     angular
         .module('app', [
             'app.core',
-            'app.lgtm'
+            'app.lgtm',
+            'app.toolbar'
         ])
         .config(function($urlRouterProvider, $locationProvider, $httpProvider){
 

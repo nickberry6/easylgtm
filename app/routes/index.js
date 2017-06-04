@@ -13,7 +13,7 @@ router.use(function(req, res, next) { //middleware for all routes
 router.use('/posts', posts);
 router.use('/setup', setup);
 router.use('/authenticate', auth);
-router.use('/', verifyToken);
+// router.use('/', verifyToken);
 router.use('/users', users);
 
 module.exports = router;

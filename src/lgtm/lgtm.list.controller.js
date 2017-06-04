@@ -17,9 +17,6 @@
           .factory('api', function ($resource) {
               var data = $resource('http://localhost:3000/api/posts/', {}, {
 
-              login:{
-                  method:'POST'
-                },
               posts:{
                   method:'GET'
                   ,
@@ -57,12 +54,9 @@
 
           vm.userProfile = loginService.getProfile();
 
-          console.log(vm.userProfile)
-
           api.posts({}, function(response) {
-
-            console.log(response);
-
+            vm.posts = response;
+            console.log(vm.posts)
           });
 
 

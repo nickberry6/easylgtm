@@ -6,7 +6,7 @@
         .controller('loginController', loginController);
 
     /* @ngInject */
-    function loginController(programService, $stateParams, $state, $resource, $http, api, api3, $cookies) {
+    function loginController($stateParams, $state, api3, $cookies, $window) {
         var vm = this;
 
         vm.login = login;
@@ -18,35 +18,16 @@
 
         function activate() {
 
-          console.log("Train yourself on the art of the fart.")
-
-          // var login = api3.login({name: 'Nick Berry', password: 'password'}, function(response) {
-          //
-          //   console.log(response);
-          //
-          // });
         }
 
 
         function login() {
+          api3.login({username: vm.username, password: vm.password}, function(response) {
 
-          api3.login({name: vm.username, password: vm.password}, function(response) {
-
-            $cookies.put('easy', response.token);
-            console.log(response);
+            $cookies.put('et', response.token);
+            $window.localStorage.setItem('username', response.username);
             $state.go('home');
           });
-
-
-
-
-
-
-
         }
-
-
-
-
     }
 })();

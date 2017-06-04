@@ -9,7 +9,8 @@
             url: '/',
             views: {
               'toolbar': {
-                templateUrl: 'toolbar/templates/toolbar.html'
+                templateUrl: 'toolbar/templates/toolbar.html',
+                controller: 'toolbarController as vm'
               },
               'content': {
                 templateUrl: 'lgtm/templates/lgtm.list.html',

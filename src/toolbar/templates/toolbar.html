@@ -16,9 +16,12 @@
 
     </div>
     <div id="navbar" class="navbar-collapse collapse">
-      <form class="navbar-form navbar-right">
+      <form ng-if="!vm.username.length" class="navbar-form navbar-right">
         <button type="submit" class="btn btn-success" ui-sref="login">Sign in</button>
       </form>
+      <div ng-if="vm.username.length" style="color:#fff;vertical-align:center;" class="navbar-right">
+        {{vm.username}}
+      </div>
     </div>
   </div>
 </nav>

@@ -12,10 +12,11 @@ users.route('/')
   })
   .post(function(req, res) {
     var user = new User();
-    user.name = req.body.name;
-    user.email = req.body.email;
-    user.password = req.body.password;
     user.admin = req.body.admin;
+    user.email = req.body.email;
+    user.firstName = req.body.firstName;
+    user.lastName = req.body.lastName;
+    user.username = req.body.username;
     user.save(function(err) {
       if (err) {
         res.send(err);
@@ -38,10 +39,11 @@ users.route('/:user_id')
         if (err) {
           res.send(err);
         };
-        user.name = req.body.name;
-        user.email = req.body.email;
-        user.password = req.body.password;
         user.admin = req.body.admin;
+        user.email = req.body.email;
+        user.firstName = req.body.firstName;
+        user.lastName = req.body.lastName;
+        user.username = req.body.username;
 
         user.save(function(err) {
             if (err) {

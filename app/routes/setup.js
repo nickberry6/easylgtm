@@ -3,15 +3,16 @@ var User = require('../models/user');
 
 setup.route('/')
   .get(function(req, res) {
-    var nick = new User({
-      firstName: 'Nick',
-      lastName: 'Berry',
+    var seed = new User({
+      firstName: 'Test',
+      lastName: 'User',
+      username: 'admin',
       email: 'nicholasberry.13@gmail.com',
       password: 'password',
       admin: true
     });
 
-    nick.save(function(err) {
+    seed.save(function(err) {
       if (err) throw err;
 
       console.log('User saved successfully');

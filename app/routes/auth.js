@@ -5,7 +5,7 @@ var config = require('../config');
 
 auth.route('/')
   .post(function(req, res) {
-    User.findOne({ email: req.body.email}, function(err, user) {
+    User.findOne({ username: req.body.username}, function(err, user) {
       if (err) throw err;
 
       if (!user) {
@@ -26,7 +26,8 @@ auth.route('/')
           res.json({
             success: true,
             message: 'Here have this token',
-            token: token
+            token: token,
+            username: user.username
           });
         };
       };
