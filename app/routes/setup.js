@@ -4,7 +4,8 @@ var User = require('../models/user');
 setup.route('/')
   .get(function(req, res) {
     var nick = new User({
-      name: 'Nick Berry',
+      firstName: 'Nick',
+      lastName: 'Berry',
       email: 'nicholasberry.13@gmail.com',
       password: 'password',
       admin: true
