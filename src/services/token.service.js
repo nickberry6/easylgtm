@@ -24,7 +24,7 @@
             token = $cookies.get('easy');
           }
 
-          return token
+          return token;
       };
 
     }

@@ -5,9 +5,6 @@
         .module('app')
         .factory('httpInterceptorService', httpInterceptorService)
 
-
-        // http-interceptor service is called from app.module.js -- $httpProvider.interceptors.push('httpInterceptorService');
-
       /* @ngInject */
       function httpInterceptorService($cookies, TokenService) {
 
