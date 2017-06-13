@@ -6,18 +6,16 @@
         .factory('httpInterceptorService', httpInterceptorService)
 
       /* @ngInject */
-      function httpInterceptorService($cookies, TokenService) {
+      function httpInterceptorService($cookies, TokenService, $log) {
 
         var sessionInjector = {
           request: function(config) {
+            var token = TokenService.getToken();
+            if (token) {
+              config.headers['X-Access-Token'] = token;
+            };
 
-              // if (!TokenService.isAnonymus) {
-              //     config.headers['x-session-token'] = SessionService.token;
-              // }
-
-             //config.headers['x-session-token'] = TokenService.getToken();
-
-              return config;
+            return config;
           }
       };
       return sessionInjector;

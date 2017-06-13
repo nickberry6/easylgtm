@@ -15,8 +15,20 @@
               'content': {
                 templateUrl: 'lgtm/templates/lgtm.list.html',
                 controller: 'lgtmListController as vm'
+              }
+            }
+          })
+          .state('new', {
+            url: '/new',
+            views: {
+              'toolbar': {
+                templateUrl: 'toolbar/templates/toolbar.html',
+                controller: 'toolbarController as vm'
               },
-
+              'content': {
+                templateUrl: 'lgtm/templates/lgtm.new.html',
+                controller: 'lgtmCreateController as vm'
+              }
             }
           })
 
@@ -25,7 +37,8 @@
             url: '/login',
             views: {
               'toolbar': {
-                templateUrl: 'toolbar/templates/toolbar.html'
+                templateUrl: 'toolbar/templates/toolbar.html',
+                controller: 'toolbarController as vm'
               },
               'content': {
                 templateUrl: 'lgtm/templates/login.html',

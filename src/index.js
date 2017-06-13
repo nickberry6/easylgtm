@@ -5,6 +5,7 @@ require('./toolbar/toolbar.module.js')
 require('./toolbar/toolbar.controller.js');;
 require('./lgtm/login.controller.js');
 require('./lgtm/lgtm.list.controller.js');
+require('./lgtm/lgtm.create.controller.js');
 require('./lgtm/lgtm.routes.js');
 require('./services/post.service.js');
 require('./services/login.service.js');

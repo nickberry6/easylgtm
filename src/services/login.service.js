@@ -6,29 +6,15 @@
         .factory('loginService', loginService);
 
     /* @ngInject */
-    function loginService($cookies) {
+    function loginService($cookies, $resource) {
         var service = {
-          authenticate: authenticate,
-          getProfile: getProfile
+          authenticate: authenticate
         };
 
         return service;
 
         function authenticate() {
-          return $resource('http://localhost:3000/api/authenticate/', {}, {
-            'login': { method:'POST' }
-          })
-        }
-
-        function getProfile() {
-
-          var profile = {};
-
-          if($cookies.get('easy')){
-            profile = {username: "yolobuzzid"};
-          };
-
-          return profile;
+          return $resource('http://localhost:3000/api/authenticate/');
         }
     };
 })();

@@ -6,7 +6,7 @@
         .controller('loginController', loginController);
 
     /* @ngInject */
-    function loginController($stateParams, $state, api3, $cookies, $window) {
+    function loginController($stateParams, $state, $cookies, $window, loginService) {
         var vm = this;
 
         vm.login = login;
@@ -22,8 +22,7 @@
 
 
         function login() {
-          api3.login({username: vm.username, password: vm.password}, function(response) {
-
+          loginService.authenticate().save({username: vm.username, password: vm.password}, function(response) {
             $cookies.put('et', response.token);
             $window.localStorage.setItem('username', response.username);
             $state.go('home');

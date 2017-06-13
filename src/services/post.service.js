@@ -22,8 +22,8 @@
 
         function updatePost() {
           return $resource('http://localhost:3000/api/posts/:id', null, {
-          'update': { method:'PUT' }
-        })
-      };
+            'update': { method:'PUT' }
+          });
+        }
     }
 })();

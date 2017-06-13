@@ -14,12 +14,10 @@
         ////////////////////////
 
         function activate() {
-
           postService.Posts().query({}, function(response) {
             vm.posts = response;
-            console.log(vm.posts)
+            console.log(vm.posts);
           });
-
         }
     }
 })();

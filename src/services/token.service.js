@@ -15,14 +15,11 @@
 
         return service;
 
-
         function getToken(){
-
           var token = {}
-
-          if($cookies.get('easy')){
-            token = $cookies.get('easy');
-          }
+          if($cookies.get('et')){
+            token = $cookies.get('et');
+          };
 
           return token;
       };
