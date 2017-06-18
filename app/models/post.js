@@ -2,9 +2,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var PostSchema = new Schema({
-  title: String,
+  title: { type: String, required: true },
   description: String,
-  image: String,
+  image: { type: String, required: true },
   upvotes: Number,
   downvotes: Number
 }, {
