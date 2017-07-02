@@ -1,4 +1,4 @@
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-inverse navbar-fixed-top" style="background-color:#FFF !important;border-color:#FFF !important;">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -8,19 +8,28 @@
         <span class="icon-bar"></span>
       </button>
       <div>
-        <span style="text-transform: uppercase;font-weight: 500; top: 5px; position: absolute;height: 40px;width: 40px; font-size: 10px; line-height: 40px;margin: auto;text-align: center;border-radius: 50%;background-color: #ff0033;box-shadow: 0px 1px 2px #666;color: #fff">lgtm</span>
+        <span style="text-transform: uppercase;font-weight: 500; top: 5px; position: absolute;height: 40px;width: 40px; font-size: 10px; line-height: 40px;margin: auto;text-align: center;border-radius: 50%;background-color: #808080;box-shadow: 0px 1px 2px #666;color: #fff">lgtm</span>
         <a class="navbar-brand" href ui-sref="home">
           <span style="margin-left: 50px;">Easy LGTM</span>
         </a>
       </div>
     </div>
-    
+
     <div id="navbar" class="navbar-collapse collapse">
       <form ng-if="!vm.username.length" class="navbar-form navbar-right">
         <button type="submit" class="btn btn-success" ui-sref="login">Sign in</button>
       </form>
       <div ng-if="vm.username.length" style="color:#fff;padding-top:10px;" class="navbar-right">
-        {{vm.username}}
+        <div class="btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{vm.username}} <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="#">Profile</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Sign out</a></li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

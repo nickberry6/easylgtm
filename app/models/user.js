@@ -14,7 +14,6 @@ var UserSchema = new Schema({
     versionKey: false
 });
 
-// password hashing middleware
 UserSchema.pre('save', function(next) {
     var user = this;
     if (!user.isModified('password')) return next();
@@ -28,7 +27,6 @@ UserSchema.pre('save', function(next) {
     });
 });
 
-// compare password logic using bcrypt
 UserSchema.methods.comparePassword = function(candidatePassword, cb) {
     bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
         if (err) return cb(err);
