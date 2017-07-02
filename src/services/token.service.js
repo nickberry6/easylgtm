@@ -3,9 +3,7 @@
 
     angular
         .module('app')
-        .factory('TokenService', TokenService)
-
-
+        .factory('TokenService', TokenService);
 
     /* @ngInject */
     function TokenService($cookies) {
@@ -22,9 +20,6 @@
           };
 
           return token;
-      };
-
+        };
     }
-
-
 })();

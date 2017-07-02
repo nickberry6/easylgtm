@@ -14,22 +14,25 @@ auth.route('/')
           message: 'User not found.'
         });
       } else if (user) {
-        if (user.password != req.body.password) {
-          res.json({
-            success: false,
-            message: 'Invalid password.'
-          });
-        } else {
-          var token = jwt.sign(user, config.secret, {
-            expiresIn: 60*60*24 // 24 hours
-          });
-          res.json({
-            success: true,
-            message: 'Here have this token',
-            token: token,
-            username: user.username
-          });
-        };
+        user.comparePassword(req.body.password, function(err, isMatch) {
+          if (err) throw err;
+          if (!isMatch) {
+            res.json({
+              success: false,
+              message: 'Invalid password.'
+            });
+          } else {
+            var token = jwt.sign(user, config.secret, {
+              expiresIn: 60*60*24 // 24 hours
+            });
+            res.json({
+              success: true,
+              message: 'Here have this token',
+              token: token,
+              username: user.username
+            });
+          };
+        });
       };
     });
   });

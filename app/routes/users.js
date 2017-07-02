@@ -17,6 +17,7 @@ users.route('/')
     user.firstName = req.body.firstName;
     user.lastName = req.body.lastName;
     user.username = req.body.username;
+    user.password = req.body.password;
     user.save(function(err) {
       if (err) {
         res.send(err);
