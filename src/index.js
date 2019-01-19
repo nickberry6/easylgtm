@@ -1,13 +1,10 @@
-require('./app.module.js');
-require('./core/core.module.js');
-require('./lgtm/lgtm.module.js');
-require('./toolbar/toolbar.module.js')
-require('./toolbar/toolbar.controller.js');;
-require('./lgtm/login.controller.js');
-require('./lgtm/lgtm.list.controller.js');
-require('./lgtm/lgtm.create.controller.js');
-require('./lgtm/lgtm.routes.js');
-require('./services/post.service.js');
-require('./services/login.service.js');
-require('./services/http-interceptor.service.js');
-require('./services/token.service.js');
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import App from './components/App';
+
+import './app.css';
+
+ReactDOM.render((
+  <App />
+), document.getElementById('root'));
