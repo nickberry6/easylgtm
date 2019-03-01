@@ -1,52 +1,32 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 const Header = () => (
   <div>
     <header>
-      <div className="collapse bg-dark" id="navbarHeader">
-        <div className="container">
-          <div className="row">
-            <div className="col-sm-8 col-md-7 py-4">
-              <h4 className="text-white">Easy LGTM</h4>
-              <p className="text-muted">
-                Add some information about the album below, the author, or any other background context. Make it a few
-                sentences long so folks can pick up some informative tidbits. Then, link them off to some social
-                networking sites or contact information.
-              </p>
-            </div>
-            <div className="col-sm-4 offset-md-1 py-4">
-              <h4 className="text-white">Contact</h4>
-              <ul className="list-unstyled">
-                <li>
-                  <a href="#" className="text-white">
-                    Follow on Twitter
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white">
-                    Like on Facebook
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white">
-                    Email me
-                  </a>
-                </li>
-              </ul>
-            </div>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div className="container d-flex justify-content-left collapse navbar-collapse">
+          <Link className="navbar-brand" to="/">Easy LGTM</Link>
+          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+
+          <div className="collapse navbar-collapse">
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item">
+                <Link className="nav-link" to="/create">Create</Link>
+              </li>
+              <li className="nav-item dropdown">
+                <Link className="nav-link" to="/memes">Memes</Link>
+              </li>
+              <li className="nav-item dropdown">
+                <Link className="nav-link" to="/about">About</Link>
+              </li>
+            </ul>
           </div>
         </div>
-      </div>
-      <div className="navbar navbar-dark bg-dark shadow-sm">
-        <div className="container d-flex justify-content-between">
-          <a href="#" className="navbar-brand d-flex align-items-center">
-            <strong>Easy LGTM</strong>
-          </a>
-          <button className="navbar-toggler" type="button">
-            <span className="navbar-toggler-icon" />
-          </button>
-        </div>
-      </div>
+      </nav>
+
     </header>
   </div>
 );
