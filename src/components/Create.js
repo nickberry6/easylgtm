@@ -1,269 +1,340 @@
-import React from 'react'
+import React from 'react';
 
 class Create extends React.Component {
-  super(props){
-
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.base64ToBlob = this.handleChange.bind(this);
   }
 
-  componentDidMount(){
-    var canvas = document.getElementById('lgtmCanvas');
-    var ctx = canvas.getContext('2d');
-
-    /* Enable Cross Origin Image Editing */
+  componentDidMount() {
     var img = new Image();
     img.crossOrigin = '';
     img.src = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/123941/koala.jpg';
+    var canvas = document.getElementById('lgtmCanvas');
+    var ctx = canvas.getContext('2d');
 
     img.onload = function() {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0, img.width, img.height);
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0, img.width, img.height);
+      ctx.font = '150px Georgia';
+      var gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+      gradient.addColorStop('0', ' black');
+      gradient.addColorStop('0.5', '#eeeeee');
+      gradient.addColorStop('1.0', 'black');
+      // Fill with gradient
+      ctx.fillStyle = gradient;
+      ctx.fillText('LGTM', 20, 130);
+    };
 
-    var $reset = $('#resetbtn');
-    var $brightness = $('#brightnessbtn');
-    var $reset = $('#resetbtn');
-    var $brightness = $('#brightnessbtn');
-    var $noise = $('#noisebtn');
-    var $sepia = $('#sepiabtn');
-    var $contrast = $('#contrastbtn');
-    var $color = $('#colorbtn');
+    this.state = {
+      canvasImage: img
+    };
+  }
 
-    var $vintage = $('#vintagebtn');
-    var $lomo = $('#lomobtn');
-    var $emboss = $('#embossbtn');
-    var $tiltshift = $('#tiltshiftbtn');
-    var $radialblur = $('#radialblurbtn');
-    var $edgeenhance = $('#edgeenhancebtn');
+  base64ToBlob(base64, mime) {
+    mime = mime || '';
+    var sliceSize = 1024;
+    var byteChars = window.atob(base64);
+    var byteArrays = [];
 
-    var $posterize = $('#posterizebtn');
-    var $clarity = $('#claritybtn');
-    var $orangepeel = $('#orangepeelbtn');
-    var $sincity = $('#sincitybtn');
-    var $sunrise = $('#sunrisebtn');
-    var $crossprocess = $('#crossprocessbtn');
+    for (var offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
+      var slice = byteChars.slice(offset, offset + sliceSize);
 
-    var $hazydays = $('#hazydaysbtn');
-    var $love = $('#lovebtn');
-    var $grungy = $('#grungybtn');
-    var $jarques = $('#jarquesbtn');
-    var $pinhole = $('#pinholebtn');
-    var $oldboot = $('#oldbootbtn');
-    var $glowingsun = $('#glowingsunbtn');
+      var byteNumbers = new Array(slice.length);
+      for (var i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
 
-    var $hdr = $('#hdrbtn');
-    var $oldpaper = $('#oldpaperbtn');
-    var $pleasant = $('#pleasantbtn');
+      var byteArray = new Uint8Array(byteNumbers);
 
-    var $save = $('#savebtn');
-
-    /* As soon as slider value changes call applyFilters */
-    $('input[type=range]').change(applyFilters);
-
-    function applyFilters() {
-    var hue = parseInt($('#hue').val());
-    var cntrst = parseInt($('#contrast').val());
-    var vibr = parseInt($('#vibrance').val());
-    var sep = parseInt($('#sepia').val());
-
-    Caman('#lgtmCanvas', img, function() {
-      this.revert(false);
-      this.hue(hue).contrast(cntrst).vibrance(vibr).sepia(sep).render();
-    });
+      byteArrays.push(byteArray);
     }
 
-    $reset.on('click', function(e) {
-      $('input[type=range]').val(0);
-      Caman('#lgtmCanvas', img, function() {
-        this.revert(false);
-        this.render();
-      });
-    });
+    return new Blob(byteArrays, { type: mime });
+  }
 
-    /* In built filters */
-    $brightness.on('click', function(e) {
-      Caman('#lgtmCanvas', function() {
-        this.brightness(30).render();
-      });
-    });
+  handleClick($event) {
+    $event.preventDefault();
+    switch ($event.target.id) {
+      case 'save':
+        var image;
 
-    $noise.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.noise(10).render();
-      });
-    });
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.render(function() {
+            image = this.toBase64();
+          });
+        });
 
-    $contrast.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.contrast(10).render();
-      });
-    });
+        var url = 'http://localhost:3333/lgtm/meme';
 
-    $sepia.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.sepia(20).render();
-      });
-    });
+        var blob = this.base64ToBlob(image, 'image/png');
+        var formData = new FormData();
+        formData.append('picture', blob);
 
-    $color.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.colorize(60, 105, 218, 10).render();
-      });
-    });
+        // $.ajax({
+        //   url: url,
+        //   type: 'POST',
+        //   cache: false,
+        //   contentType: false,
+        //   processData: false,
+        //   data: formData
+        // }).done(function(e) {
+        //   alert('done!');
+        // });
 
-    $vintage.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.vintage().render();
-      });
-    });
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'You will perhaps need to define a content-type here'
+          },
+          body: formData
+        })
+          .then(response => response.json())
+          .then(success => console.log(success))
+          .catch(error => console.log(error));
 
-    $lomo.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.lomo().render();
-      });
-    });
+        break;
 
-    $emboss.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.emboss().render();
-      });
-    });
-
-    $tiltshift.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.tiltShift({
-        angle: 90,
-        focusWidth: 600
-        }).render();
-      });
-    });
-
-    $radialblur.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.radialBlur().render();
-      });
-    });
-
-    $edgeenhance.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.edgeEnhance().render();
-      });
-    });
-
-    $posterize.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.posterize(8, 8).render();
-      });
-    });
-
-    $clarity.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.clarity().render();
-      });
-    });
-
-    $orangepeel.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.orangePeel().render();
-      });
-    });
-
-    $sincity.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.sinCity().render();
-      });
-    });
-
-    $sunrise.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.sunrise().render();
-      });
-    });
-
-    $crossprocess.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.crossProcess().render();
-      });
-    });
-
-    $love.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.love().render();
-      });
-    });
-
-    $grungy.on('click', function(e) {
-    Caman('#lgtmCanvas', img, function() {
-    this.grungy().render();
-    });
-    });
-
-    $jarques.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.jarques().render();
-      });
-    });
-
-    $pinhole.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.pinhole().render();
-      });
-    });
-
-    $oldboot.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.oldBoot().render();
-      });
-    });
-
-    $glowingsun.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.glowingSun().render();
-      });
-    });
-
-    $hazydays.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.hazyDays().render();
-      });
-    });
-
-    /* Calling multiple filters inside same function */
-    $hdr.on('click', function(e) {
-      Caman('#lgtmCanvas', img, function() {
-        this.contrast(10);
-        this.contrast(10);
-        this.jarques();
-        this.render();
-      });
-    });
-
-    /* Custom filters that we created */
-    $oldpaper.on('click', function(e) {
-    Caman('#lgtmCanvas', img, function() {
-        this.oldpaper();
-        this.render();
-      });
-    });
-
-    $pleasant.on('click', function(e) {
-    Caman('#lgtmCanvas', img, function() {
-      this.pleasant();
-      this.render();
-    });
-    });
-
-    /* You can also save it as a jpg image, extension need to be added later after saving image. */
-
-    $save.on('click', function(e) {
-        Caman('#lgtmCanvas', img, function() {
+      case 'download':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
           this.render(function() {
             this.save('png');
+          });
         });
-      });
-    });
+        break;
 
+      case 'upload':
+        var file = document.querySelector('#upload').files[0];
+        var reader = new FileReader();
+        if (file) {
+          var fileName = file.name;
+          reader.readAsDataURL(file);
+        }
+        var canvas = document.getElementById('lgtmCanvas');
+        var ctx = canvas.getContext('2d');
+        reader.addEventListener(
+          'load',
+          function() {
+            var img = new Image();
+            img.src = reader.result;
+            img.onload = function() {
+              canvas.width = img.width;
+              canvas.height = img.height;
+              ctx.drawImage(img, 0, 0, img.width, img.height);
+            };
+          },
+          false
+        );
+        break;
 
+      case 'reset':
+        // $('input[type=range]').val(0);
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.revert(false);
+          this.render();
+        });
+        break;
+
+      case 'brightness':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.brightness();
+
+          this.render();
+        });
+        break;
+
+      case 'noise':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.noise(10).render();
+        });
+        break;
+
+      case 'contrast':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.contrast(10).render();
+        });
+        break;
+
+      case 'sepia':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.sepia(20).render();
+        });
+        break;
+
+      case 'color':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.colorize(60, 105, 218, 10).render();
+        });
+        break;
+
+      case 'vintage':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.vintage().render();
+        });
+        break;
+
+      case 'lomo':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.lomo().render();
+        });
+        break;
+
+      case 'emboss':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.emboss().render();
+        });
+        break;
+
+      case 'tiltshift':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.tiltShift({
+            angle: 90,
+            focusWidth: 600
+          }).render();
+        });
+        break;
+
+      case 'radialblur':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.radialBlur().render();
+        });
+        break;
+
+      case 'edgeenhance':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.edgeEnhance().render();
+        });
+        break;
+
+      case 'posterize':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.posterize(8, 8).render();
+        });
+        break;
+
+      case 'clarity':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.clarity().render();
+        });
+        break;
+
+      case 'orangepeel':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.orangePeel().render();
+        });
+        break;
+
+      case 'sincity':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.sinCity().render();
+        });
+        break;
+
+      case 'sunrise':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.sunrise().render();
+        });
+        break;
+
+      case 'crossprocess':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.crossProcess().render();
+        });
+        break;
+
+      case 'love':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.love().render();
+        });
+        break;
+
+      case 'grungy':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.grungy().render();
+        });
+        break;
+
+      case 'jarques':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.jarques().render();
+        });
+        break;
+
+      case 'pinhole':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.pinhole().render();
+        });
+        break;
+
+      case 'oldboot':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.oldBoot().render();
+        });
+        break;
+
+      case 'glowingsun':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.glowingSun().render();
+        });
+        break;
+
+      case 'hazydays':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.hazyDays().render();
+        });
+        break;
+
+      case 'hdr':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.contrast(10);
+          this.contrast(10);
+          this.jarques();
+          this.render();
+        });
+        break;
+
+      case 'oldpaper':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.oldpaper();
+          this.render();
+        });
+        break;
+      case 'pleasant':
+        Caman('#lgtmCanvas', this.state.canvasImage, function() {
+          this.pleasant();
+          this.render();
+        });
+        break;
+
+      default:
+        return false;
     }
+  }
+
+  handleChange($event) {
+    this.applyFilters();
+  }
+
+  applyFilters() {
+    var hue = document.getElementById('hue').value;
+    var cntrst = document.getElementById('contrast').value;
+    var vibr = document.getElementById('vibrance').value;
+    var sep = document.getElementById('sepia').value;
+    var bright = document.getElementById('brightness').value;
+
+    Caman('#lgtmCanvas', this.state.canvasImage, function() {
+      this.revert(false);
+      this.hue(hue)
+        .contrast(cntrst)
+        .vibrance(vibr)
+        .sepia(sep)
+        .brightness(bright)
+
+        .render();
+    });
   }
 
   render() {
@@ -271,72 +342,179 @@ class Create extends React.Component {
       <div className="container">
         <div className="col-lg-12 d-flex justify-content-center pt-2">
           <div className="pr-1">
-            <button id="resetbtn" className="btn btn-success">Reset Photo</button>
+            <button id="reset" className="btn btn-success" onClick={e => this.handleClick(e)}>
+              Reset Photo
+            </button>
           </div>
           <div className="pl-1">
-            <button id="savebtn" className="btn btn-success">Save Image</button>
+            <button id="save" className="btn btn-warning" onClick={e => this.handleClick(e)}>
+              Save Image
+            </button>
+          </div>
+          <div className="pl-1">
+            <button id="download" className="btn btn-info" onClick={e => this.handleClick(e)}>
+              Download Image
+            </button>
+          </div>
+          <div className="pl-1">
+            <div className="col-lg-12">
+              <div className="custom-file">
+                <input type="file" className="custom-file-input" id="upload" onChange={e => this.handleClick(e)} />
+                <label className="custom-file-label" htmlFor="upload">
+                  Upload Image...
+                </label>
+              </div>
+            </div>
           </div>
         </div>
         <div className="col-lg-12 d-flex justify-content-center p-2">
-          <canvas id="lgtmCanvas"></canvas>
+          <canvas id="lgtmCanvas" />
         </div>
         <div className="col-lg-12 d-flex justify-content-center p-2">
           <div>
+            <label htmlFor="contrast">Brightness</label>
+
+            <input
+              id="brightness"
+              name="brightness"
+              className="custom-range"
+              type="range"
+              min="-100"
+              max="100"
+              step="1"
+              data-filter="brightness"
+              onChange={e => this.handleChange(e)}
+            />
+            <span className="FilterValue">0</span>
+          </div>
+          <div>
             <label htmlFor="hue">Hue</label>
-            <input id="hue" name="hue" type="range" min="0" max="300" />
+            <input
+              id="hue"
+              name="hue"
+              type="range"
+              className="custom-range"
+              min="0"
+              max="300"
+              onChange={e => this.handleChange(e)}
+            />
           </div>
           <div>
             <label htmlFor="contrast">Contrast</label>
-            <input id="contrast" name="contrast" type="range" min="-20" max="20" />
+            <input
+              id="contrast"
+              name="contrast"
+              type="range"
+              className="custom-range"
+              min="-20"
+              max="20"
+              onChange={e => this.handleChange(e)}
+            />
           </div>
           <div>
             <label htmlFor="vibrance">Vibrance</label>
-            <input id="vibrance" name="vibrance" type="range" min="0" max="400" />
+            <input
+              id="vibrance"
+              name="vibrance"
+              type="range"
+              className="custom-range"
+              min="0"
+              max="400"
+              onChange={e => this.handleChange(e)}
+            />
           </div>
           <div>
             <label htmlFor="sepia">Sepia</label>
-            <input id="sepia" name="sepia" type="range" min="0" max="100" />
+            <input
+              id="sepia"
+              name="sepia"
+              type="range"
+              min="0"
+              className="custom-range"
+              max="100"
+              onChange={e => this.handleChange(e)}
+            />
           </div>
         </div>
         <div className="col-lg-12 d-flex justify-content-center">
-
           <div className="col-lg-8 justify-content-center">
-
-            <button id="brightnessbtn" className="btn btn-primary">Brightness</button>
-            <button id="noisebtn" className="btn btn-primary">Noise</button>
-            <button id="sepiabtn" className="btn btn-primary">Sepia</button>
-            <button id="contrastbtn" className="btn btn-primary">Contrast</button>
-            <button id="colorbtn" className="btn btn-primary">Colorize</button>
-
-
-
-            <button id="vintagebtn" className="btn btn-primary">Vintage</button>
-            <button id="lomobtn" className="btn btn-primary">Lomo</button>
-            <button id="embossbtn" className="btn btn-primary">Emboss</button>
-            <button id="tiltshiftbtn" className="btn btn-primary">Tilt Shift</button>
-            <button id="radialblurbtn" className="btn btn-primary">Radial Blur</button>
-            <button id="edgeenhancebtn" className="btn btn-primary">Edge Enhance</button>
-
-
-
-            <button id="posterizebtn" className="btn btn-primary">Posterize</button>
-            <button id="claritybtn" className="btn btn-primary">Clarity</button>
-            <button id="orangepeelbtn" className="btn btn-primary">Orange Peel</button>
-            <button id="sincitybtn" className="btn btn-primary">Sin City</button>
-            <button id="sunrisebtn" className="btn btn-primary">Sun Rise</button>
-            <button id="crossprocessbtn" className="btn btn-primary">Cross Process</button>
-
-            <button id="hazydaysbtn" className="btn btn-primary">Hazy</button>
-            <button id="lovebtn" className="btn btn-primary">Love</button>
-            <button id="grungybtn" className="btn btn-primary">Grungy</button>
-            <button id="jarquesbtn" className="btn btn-primary">Jarques</button>
-            <button id="pinholebtn" className="btn btn-primary">Pin Hole</button>
-            <button id="oldbootbtn" className="btn btn-primary">Old Boot</button>
-            <button id="glowingsunbtn" className="btn btn-primary">Glow Sun</button>
+            <button id="brightness" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Brightness
+            </button>
+            <button id="noise" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Noise
+            </button>
+            <button id="sepia" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Sepia
+            </button>
+            <button id="contrast" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Contrast
+            </button>
+            <button id="color" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Colorize
+            </button>
+            <button id="vintage" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Vintage
+            </button>
+            <button id="lomo" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Lomo
+            </button>
+            <button id="emboss" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Emboss
+            </button>
+            <button id="tiltshift" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Tilt Shift
+            </button>
+            <button id="radialblur" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Radial Blur
+            </button>
+            <button id="edgeenhance" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Edge Enhance
+            </button>
+            <button id="posterize" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Posterize
+            </button>
+            <button id="clarity" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Clarity
+            </button>
+            <button id="orangepeel" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Orange Peel
+            </button>
+            <button id="sincity" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Sin City
+            </button>
+            <button id="sunrise" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Sun Rise
+            </button>
+            <button id="crossprocess" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Cross Process
+            </button>
+            <button id="hazydays" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Hazy
+            </button>
+            <button id="love" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Love
+            </button>
+            <button id="grungy" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Grungy
+            </button>
+            <button id="jarques" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Jarques
+            </button>
+            <button id="pinhole" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Pin Hole
+            </button>
+            <button id="oldboot" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Old Boot
+            </button>
+            <button id="glowingsun" className="btn btn-primary" onClick={e => this.handleClick(e)}>
+              Glow Sun
+            </button>
           </div>
         </div>
-      </div>);
+      </div>
+    );
   }
 }
 
-export default Create
+export default Create;
